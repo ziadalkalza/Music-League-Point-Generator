@@ -1,6 +1,6 @@
 # Music League Point Distributor
 
-This is a simple and fun program that takes the list of songs from your Music League playlist, and uses your ranking to distribute the available points accordingly.
+This is a simple and fun program that takes in the list of songs from your Music League playlist, and uses your ranking to distribute the available points accordingly.
 
 ## Usage
 

@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public class PointGenerator {
+public class PointDistributor {
 
     static String playlistName;
     static int numberOfSongs;
@@ -51,7 +51,6 @@ public class PointGenerator {
                 while (true) {
                     try {
                         System.out.println("Do you want the next song to have the same rank? (y/n)");
-                        System.out.flush();
                         String rankResponse = input.next();
                         if (rankResponse.equals("y")) {
                             break;
@@ -79,6 +78,7 @@ public class PointGenerator {
                 input.nextLine();
             }
         }
+        input.nextLine();
 
         assignPoints(zeros);
         createFile();
@@ -142,8 +142,8 @@ public class PointGenerator {
     }
 
     private static void createFile() {
+        File fileList = new File(playlistName + ".txt");
         try {
-            File fileList = new File(playlistName + ".txt");
             if (fileList.createNewFile()) {
                 System.out.println("File created: " + fileList.getName());
             } else {
@@ -154,7 +154,7 @@ public class PointGenerator {
             e.printStackTrace();
         }
         try {
-            BufferedWriter fileWrite = new BufferedWriter(new FileWriter("..\\" + playlistName + ".txt"));
+            BufferedWriter fileWrite = new BufferedWriter(new FileWriter(fileList.getAbsolutePath()));
             fileWrite.write("Music League Point Distribution");
             fileWrite.newLine();
             fileWrite.write("--------------------------------");
@@ -184,7 +184,7 @@ public class PointGenerator {
             }
             fileWrite.write("--------------------------------");
             fileWrite.close();
-            System.out.println("Successfully wrote to the file.");
+            System.out.println("Successfully wrote to file.");
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();

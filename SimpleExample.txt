@@ -1,0 +1,14 @@
+Music League Point Distribution
+--------------------------------
+File Details
+--------------------------------
+Playlist Name: SimpleExample
+Number of Songs: 2
+Available Points: 10
+Number of zeros: 0
+--------------------------------
+Song List
+--------------------------------
+1. goodSong: 8
+2. badSong: 2
+--------------------------------
