@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.InputMismatchException;
@@ -7,56 +11,78 @@ import java.util.TreeMap;
 
 public class PointGenerator {
 
+    static String playlistName;
     static int numberOfSongs;
     static int availablePoints;
+    static int zeros;
     static int totalPoints = 0;
     static LinkedList<Song> songs = new LinkedList<Song>();
     static TreeMap<Integer, Rank> rankMap = new TreeMap<>();
 
     public static void main(String[] args) {
-        System.out.println("Enter the number of songs");
         Scanner input = new Scanner(System.in);
-        numberOfSongs = input.nextInt();
-        System.out.println("Enter the number of available points");
-        availablePoints = input.nextInt();
+        System.out.println("Name of Playlist:");
+        playlistName = input.nextLine();
+        while (true) {
+            try {
+                System.out.println("Number of Songs:");
+                numberOfSongs = input.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("This is not a number!");
+                input.nextLine();
+            }
+        }
+        while (true) {
+            try {
+                System.out.println("Available Points:");
+                availablePoints = input.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("This is not a number!");
+                input.nextLine();
+            }
+        }
         int currentRank = 1;
         for (int i = 0; i < numberOfSongs; i++) {
             System.out.println("Rank: " + (currentRank) + "->");
             songs.add(new Song(i, currentRank, input.next()));
             if (i < numberOfSongs - 1) {
-                boolean done = false;
-                do {
+                while (true) {
                     try {
                         System.out.println("Do you want the next song to have the same rank? (y/n)");
                         System.out.flush();
                         String rankResponse = input.next();
                         if (rankResponse.equals("y")) {
-                            done = true;
+                            break;
                         } else if (rankResponse.equals("n")) {
                             rankMap.put(currentRank, new Rank(i, currentRank > i ? 1 : i - currentRank + 2));
                             currentRank = currentRank > i ? currentRank + 1 : i + 2;
-                            done = true;
-                        } else
+                            break;
+                        } else {
                             System.out.println("Incorrect selection, please try again!");
+                        }
                     } catch (InputMismatchException e) {
-                        System.out.println("This is not a letter");
+                        System.out.println("Incorrect selection, please try again!");
                         input.nextLine();
                     }
-                } while (!done);
+                }
             }
         }
-        int zeros;
-        System.out.println("Please enter the number of songs with zero points:");
-        zeros = input.nextInt();
-        assignPoints(zeros);
-        input.close();
-
-        System.out.println("Music League Point Distribution:");
-        System.out.println("---------------------");
-        for (int i = 0; i < songs.size(); i++) {
-            System.out.println(songs.get(i).getName() + ": " + songs.get(i).getPoints());
+        while (true) {
+            try {
+                System.out.println("Number of songs with zero points:");
+                zeros = input.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("This is not a number!");
+                input.nextLine();
+            }
         }
-        System.out.println("---------------------");
+
+        assignPoints(zeros);
+        createFile();
+        input.close();
     }
 
     private static void assignPoints(int zeros) {
@@ -112,6 +138,56 @@ public class PointGenerator {
                 deficit--;
                 totalPoints++;
             }
+        }
+    }
+
+    private static void createFile() {
+        try {
+            File fileList = new File(playlistName + ".txt");
+            if (fileList.createNewFile()) {
+                System.out.println("File created: " + fileList.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        try {
+            BufferedWriter fileWrite = new BufferedWriter(new FileWriter("..\\" + playlistName + ".txt"));
+            fileWrite.write("Music League Point Distribution");
+            fileWrite.newLine();
+            fileWrite.write("--------------------------------");
+            fileWrite.newLine();
+            fileWrite.write("File Details");
+            fileWrite.newLine();
+            fileWrite.write("--------------------------------");
+            fileWrite.newLine();
+            fileWrite.write("Playlist Name: " + playlistName);
+            fileWrite.newLine();
+            fileWrite.write("Number of Songs: " + numberOfSongs);
+            fileWrite.newLine();
+            fileWrite.write("Available Points: " + availablePoints);
+            fileWrite.newLine();
+            fileWrite.write("Number of zeros: " + zeros);
+            fileWrite.newLine();
+            fileWrite.write("--------------------------------");
+            fileWrite.newLine();
+            fileWrite.write("Song List");
+            fileWrite.newLine();
+            fileWrite.write("--------------------------------");
+            fileWrite.newLine();
+            for (int i = 0; i < songs.size(); i++) {
+                fileWrite.write(
+                        songs.get(i).getRank() + ". " + songs.get(i).getName() + ": " + songs.get(i).getPoints());
+                fileWrite.newLine();
+            }
+            fileWrite.write("--------------------------------");
+            fileWrite.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
     }
 }
