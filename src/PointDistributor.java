@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class PointDistributor {
