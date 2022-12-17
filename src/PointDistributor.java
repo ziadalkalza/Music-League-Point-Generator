@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class PointDistributor {
@@ -19,10 +20,17 @@ public class PointDistributor {
     static LinkedList<Song> songs = new LinkedList<Song>();
     static TreeMap<Integer, Rank> rankMap = new TreeMap<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Scanner songInput = new Scanner(System.in);
         Scanner input = new Scanner(System.in);
-        System.out.println("Name of Playlist:");
-        playlistName = input.nextLine();
+        while (true) {
+            System.out.println("Name of Playlist:");
+            playlistName = input.nextLine();
+            if (playlistName.matches("^[a-zA-Z0-9._ -()\\[\\]]+")) {
+                break;
+            } else
+                System.out.println("Name must not contain any of these characters / \\ : * ? \" < > | ?");
+        }
         while (true) {
             try {
                 System.out.println("Number of Songs:");
@@ -46,7 +54,7 @@ public class PointDistributor {
         int currentRank = 1;
         for (int i = 0; i < numberOfSongs; i++) {
             System.out.println("Rank: " + (currentRank) + "->");
-            songs.add(new Song(i, currentRank, input.next()));
+            songs.add(new Song(i, currentRank, songInput.nextLine()));
             if (i < numberOfSongs - 1) {
                 while (true) {
                     try {
@@ -82,6 +90,7 @@ public class PointDistributor {
 
         assignPoints(zeros);
         createFile();
+        songInput.close();
         input.close();
     }
 
